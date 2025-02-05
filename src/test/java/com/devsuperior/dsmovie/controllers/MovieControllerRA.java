@@ -62,11 +62,35 @@ public class MovieControllerRA {
 	}
 	
 	@Test
-	public void findByIdShouldReturnMovieWhenIdExists() {		
+	public void findByIdShouldReturnMovieWhenIdExists() {
+
+		given()
+				.header("Content-Type", "application/json")
+				.header("Authorization", "Bearer " + clientToken)
+		.when()
+				.get("/movies/{id}", existingId)
+		.then()
+				.statusCode(200)
+				.body("id", is(1))
+				.body("title", equalTo("The Witcher"))
+				.body("score", is(4.5f))
+				.body("count", is(2))
+				.body("image", equalTo("https://www.themoviedb.org/t/p/w533_and_h300_bestv2/jBJWaqoSCiARWtfV0GlqHrcdidd.jpg"));
 	}
 	
 	@Test
-	public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() {	
+	public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() {
+
+		given()
+				.header("Content-Type", "application/json")
+				.header("Authorization", "Bearer " + clientToken)
+		.when()
+				.get("/movies/{id}", nonExistingId)
+		.then()
+				.statusCode(404)
+				.body("status", is(404))
+				.body("error", equalTo("Recurso não encontrado"))
+				.body("path", equalTo("/movies/"+nonExistingId.toString()));
 	}
 	
 	@Test
